@@ -6,10 +6,10 @@ corpus_movie_lines = 'cornell movie-dialogs corpus/movie_lines.txt'
 max_len = 25
 
 
-with open(corpus_movie_conv, 'r') as c:
-    conv = c.readlines()
+with open(corpus_movie_conv, 'r', encoding='iso-8859-1') as c:
+        conv = c.readlines()
 
-with open(corpus_movie_lines, 'r') as l:
+with open(corpus_movie_lines, 'r', encoding='iso-8859-1') as l:
     lines = l.readlines()
 
 
@@ -34,11 +34,11 @@ for con in conv:
     ids = eval(con.split(" +++$+++ ")[-1])
     for i in range(len(ids)):
         qa_pairs = []
-        
+
         if i==len(ids)-1:
             break
-        
-        first = remove_punc(lines_dic[ids[i]].strip())      
+
+        first = remove_punc(lines_dic[ids[i]].strip())
         second = remove_punc(lines_dic[ids[i+1]].strip())
         qa_pairs.append(first.split()[:max_len])
         qa_pairs.append(second.split()[:max_len])
