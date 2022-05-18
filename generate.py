@@ -90,7 +90,7 @@ def evaluate(transformer, question, question_mask, max_len, word_map):
         words = words.squeeze(0)
         words = words.tolist()
 
-    sen_idx = [w for w in words if w not in {word_map['<start>']}]
+    sen_idx = [w for w in words if w not in {word_map['<cloud>']}]
     sentence = ' '.join([rev_word_map[sen_idx[k]] for k in range(len(sen_idx))])
 
     return sentence
