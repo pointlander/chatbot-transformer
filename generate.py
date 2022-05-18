@@ -69,7 +69,7 @@ def evaluate(transformer, question, question_mask, max_len, word_map):
     """
     rev_word_map = {v: k for k, v in word_map.items()}
     transformer.eval()
-    start_token = word_map['<start>']
+    start_token = word_map['<cloud>']
     encoded = transformer.encode(question, question_mask)
     words = torch.LongTensor([[start_token]]).to(device)
 
