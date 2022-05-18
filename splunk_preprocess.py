@@ -161,6 +161,10 @@ for pair in pairs:
     qus = encode_question('<enterprise>', pair[0], word_map)
     ans = encode_reply('<cloud>', pair[1], word_map)
     pairs_encoded.append([qus, ans])
+for pair in pairs:
+    qus = encode_question('<cloud>', pair[1], word_map)
+    ans = encode_reply('<enterprise>', pair[0], word_map)
+    pairs_encoded.append([qus, ans])
 for pair in enterprise:
     qus = encode_question('<enterprise>', pair[0], word_map)
     ans = encode_reply('<enterprise>', pair[1], word_map)
