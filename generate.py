@@ -113,7 +113,7 @@ for item in root.findall('./SplunkSavedSearches/SplunkSavedSearch'):
             search['cloud'] = child.text
     if ('enterprise' in search.keys()) and not ('cloud' in search.keys()):
         max_len = 1000
-        enc_qus = [word_map.get(word, word_map['<unk>']) for word in parse(search['enterprise'])]
+        enc_qus = [word_map['<enterprise>']] + [word_map.get(word, word_map['<unk>']) for word in parse(search['enterprise'])] + [word_map['<end>']]
         question = torch.LongTensor(enc_qus).to(device).unsqueeze(0)
         question_mask = (question!=0).to(device).unsqueeze(1).unsqueeze(1)
         sentence = evaluate(transformer, question, question_mask, int(max_len), word_map)
