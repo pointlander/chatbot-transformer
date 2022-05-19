@@ -117,6 +117,7 @@ for item in root.findall('./SplunkSavedSearches/SplunkSavedSearch'):
         question = torch.LongTensor(enc_qus).to(device).unsqueeze(0)
         question_mask = (question!=0).to(device).unsqueeze(1).unsqueeze(1)
         sentence = evaluate(transformer, question, question_mask, int(max_len), word_map)
+        print(search['enterprise'])
         print(sentence)
 
 #while(1):

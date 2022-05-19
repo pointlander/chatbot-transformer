@@ -5,8 +5,8 @@ import torch.utils.data
 from models import *
 from utils import *
 
-
-train_loader = torch.utils.data.DataLoader(Dataset(),
+dataset = Dataset()
+train_loader = torch.utils.data.DataLoader(dataset,
                                            batch_size = 8,
                                            shuffle=True,
                                            pin_memory=True)
@@ -68,6 +68,14 @@ def train(train_loader, transformer, criterion, epoch):
 
 
 for epoch in range(epochs):
+    if epoch == 0:
+        dataset.swap = 20
+    elif epoch == 1:
+        dataset.swap = 10
+    elif epoch == 3:
+        dataset.swap = 5
+    elif epoch == 6:
+        dataset.swap = 1
 
     train(train_loader, transformer, criterion, epoch)
 
