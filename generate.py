@@ -69,7 +69,7 @@ def evaluate(transformer, question, question_mask, max_len, word_map):
     """
     rev_word_map = {v: k for k, v in word_map.items()}
     transformer.eval()
-    start_token = word_map['<cloud>']
+    start_token = word_map['<start>']
     encoded = transformer.encode(question, question_mask)
     words = torch.LongTensor([[start_token]]).to(device)
 
@@ -90,7 +90,7 @@ def evaluate(transformer, question, question_mask, max_len, word_map):
         words = words.squeeze(0)
         words = words.tolist()
 
-    sen_idx = [w for w in words if w not in {word_map['<cloud>']}]
+    sen_idx = [w for w in words if w not in {word_map['<start>']}]
     sentence = ' '.join([rev_word_map[sen_idx[k]] for k in range(len(sen_idx))])
 
     return sentence
@@ -113,7 +113,7 @@ for item in root.findall('./SplunkSavedSearches/SplunkSavedSearch'):
             search['cloud'] = child.text
     if ('enterprise' in search.keys()) and not ('cloud' in search.keys()):
         max_len = 1000
-        enc_qus = [word_map['<enterprise>']] + [word_map.get(word, word_map['<unk>']) for word in parse(search['enterprise'])] + [word_map['<end>']]
+        enc_qus = [word_map['<cloud>']] + [word_map.get(word, word_map['<unk>']) for word in parse(search['enterprise'])] + [word_map['<end>']]
         question = torch.LongTensor(enc_qus).to(device).unsqueeze(0)
         question_mask = (question!=0).to(device).unsqueeze(1).unsqueeze(1)
         sentence = evaluate(transformer, question, question_mask, int(max_len), word_map)

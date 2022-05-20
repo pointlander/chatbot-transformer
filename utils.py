@@ -3,58 +3,65 @@ import torch.nn as nn
 from torch.utils.data import Dataset
 import torch.utils.data
 import json
+from random import randint
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Dataset(Dataset):
 
     def __init__(self):
-
+        self.swap = 0
         self.pairs = json.load(open('pairs_encoded.json'))
         self.dataset_size = len(self.pairs)
 
     def __getitem__(self, i):
-        
-        question = torch.LongTensor(self.pairs[i][0])
+        pairs = self.pairs[i][0].copy()
+        for i in range(0, self.swap):
+            x = randint(0, len(pairs)-1)
+            y = randint(0, len(pairs)-1)
+            tmp = pairs[x]
+            pairs[x] = pairs[y]
+            pairs[y] = tmp
+        question = torch.LongTensor(pairs)
         reply = torch.LongTensor(self.pairs[i][1])
-            
+
         return question, reply
 
     def __len__(self):
         return self.dataset_size
-    
+
 
 def create_masks(question, reply_input, reply_target):
-    
+
     def subsequent_mask(size):
         mask = torch.triu(torch.ones(size, size)).transpose(0, 1).type(dtype=torch.uint8)
         return mask.unsqueeze(0)
-    
+
     question_mask = (question!=0).to(device)
     question_mask = question_mask.unsqueeze(1).unsqueeze(1)         # (batch_size, 1, 1, max_words)
-     
+
     reply_input_mask = reply_input!=0
     reply_input_mask = reply_input_mask.unsqueeze(1)  # (batch_size, 1, max_words)
-    reply_input_mask = reply_input_mask & subsequent_mask(reply_input.size(-1)).type_as(reply_input_mask.data) 
+    reply_input_mask = reply_input_mask & subsequent_mask(reply_input.size(-1)).type_as(reply_input_mask.data)
     reply_input_mask = reply_input_mask.unsqueeze(1) # (batch_size, 1, max_words, max_words)
     reply_target_mask = reply_target!=0              # (batch_size, max_words)
-    
+
     return question_mask, reply_input_mask, reply_target_mask
 
 
 class AdamWarmup:
-    
+
     def __init__(self, model_size, warmup_steps, optimizer):
-        
+
         self.model_size = model_size
         self.warmup_steps = warmup_steps
         self.optimizer = optimizer
         self.current_step = 0
         self.lr = 0
-        
+
     def get_lr(self):
         return self.model_size ** (-0.5) * min(self.current_step ** (-0.5), self.current_step * self.warmup_steps ** (-1.5))
-        
+
     def step(self):
         # Increment the number of steps each time we call the step function
         self.current_step += 1
@@ -63,7 +70,7 @@ class AdamWarmup:
             param_group['lr'] = lr
         # update the learning rate
         self.lr = lr
-        self.optimizer.step()   
+        self.optimizer.step()
 
 class LossWithLS(nn.Module):
 
@@ -73,7 +80,7 @@ class LossWithLS(nn.Module):
         self.confidence = 1.0 - smooth
         self.smooth = smooth
         self.size = size
-        
+
     def forward(self, prediction, target, mask):
         """
         prediction of shape: (batch_size, max_words, vocab_size)

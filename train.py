@@ -15,7 +15,7 @@ d_model = 256
 heads = 8
 num_layers = 6
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-epochs = 10
+epochs = 33
 
 with open('WORDMAP_corpus.json', 'r') as j:
     word_map = json.load(j)

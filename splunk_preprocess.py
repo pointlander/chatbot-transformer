@@ -136,6 +136,7 @@ word_map = {k: v + 1 for v, k in enumerate(words)}
 word_map['<unk>'] = len(word_map) + 1
 word_map['<enterprise>'] = len(word_map) + 1
 word_map['<cloud>'] = len(word_map) + 1
+word_map['<start>'] = len(word_map) + 1
 word_map['<end>'] = len(word_map) + 1
 word_map['<pad>'] = 0
 
@@ -158,20 +159,20 @@ def encode_reply(tag, words, word_map):
 
 pairs_encoded = []
 for pair in pairs:
-    qus = encode_question('<enterprise>', pair[0], word_map)
-    ans = encode_reply('<cloud>', pair[1], word_map)
+    qus = encode_question('<cloud>', pair[0], word_map)
+    ans = encode_reply('<start>', pair[1], word_map)
     pairs_encoded.append([qus, ans])
 for pair in pairs:
-    qus = encode_question('<cloud>', pair[1], word_map)
-    ans = encode_reply('<enterprise>', pair[0], word_map)
+    qus = encode_question('<enterprise>', pair[1], word_map)
+    ans = encode_reply('<start>', pair[0], word_map)
     pairs_encoded.append([qus, ans])
 for pair in enterprise:
     qus = encode_question('<enterprise>', pair[0], word_map)
-    ans = encode_reply('<enterprise>', pair[1], word_map)
+    ans = encode_reply('<start>', pair[1], word_map)
     pairs_encoded.append([qus, ans])
 for pair in cloud:
     qus = encode_question('<cloud>', pair[0], word_map)
-    ans = encode_reply('<cloud>', pair[1], word_map)
+    ans = encode_reply('<start>', pair[1], word_map)
     pairs_encoded.append([qus, ans])
 
 with open('pairs_encoded.json', 'w') as p:
