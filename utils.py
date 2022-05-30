@@ -5,13 +5,18 @@ import torch.utils.data
 import json
 from random import randint
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class Dataset(Dataset):
 
     def __init__(self):
         self.swap = 0
         self.pairs = json.load(open('pairs_encoded.json'))
+        self.map = json.load(open('WORDMAP_corpus.json'))
+        self.max = 0
+        for attribute, value in self.map.items():
+            if value > self.max:
+                self.max = value
         self.dataset_size = len(self.pairs)
 
     def __getitem__(self, i):
@@ -22,6 +27,9 @@ class Dataset(Dataset):
             tmp = pairs[x]
             pairs[x] = pairs[y]
             pairs[y] = tmp
+        for i in range(0, self.swap):
+            x = randint(0, len(pairs)-1)
+            pairs[x] = randint(0, self.max)
         question = torch.LongTensor(pairs)
         reply = torch.LongTensor(self.pairs[i][1])
 

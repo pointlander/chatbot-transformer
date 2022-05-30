@@ -14,7 +14,7 @@ train_loader = torch.utils.data.DataLoader(dataset,
 d_model = 256
 heads = 8
 num_layers = 6
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 epochs = 33
 
 with open('WORDMAP_corpus.json', 'r') as j:
