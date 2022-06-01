@@ -7,13 +7,13 @@ from utils import *
 
 dataset = Dataset()
 train_loader = torch.utils.data.DataLoader(dataset,
-                                           batch_size = 8,
+                                           batch_size = 16,
                                            shuffle=True,
                                            pin_memory=True)
 
-d_model = 256
+d_model = 32
 heads = 8
-num_layers = 6
+num_layers = 8
 device = "cpu" #torch.device("cuda" if torch.cuda.is_available() else "cpu")
 epochs = 33
 

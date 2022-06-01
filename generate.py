@@ -6,7 +6,7 @@ import torch.utils.data
 from models import *
 from utils import *
 
-ckpt_path = 'checkpoint_9.pth.tar'
+ckpt_path = 'checkpoint_32.pth.tar'
 
 def parse(value):
     token = ''
